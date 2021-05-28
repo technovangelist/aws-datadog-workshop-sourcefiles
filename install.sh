@@ -15,6 +15,7 @@ echo "export DD_APP_KEY=$DD_APP_KEY" >> ~/.bashrc
 echo "export TF_VAR_ddapikey=$DD_API_KEY" >> ~/.bashrc
 echo "export TF_VAR_ddappkey=$DD_APP_KEY" >> ~/.bashrc
 echo "export KUBECONFIG=~/.kube/sandbox.conf" >> ~/.bashrc
+echo "alias k=kubectl" >> ~/.bashrc
 
 
 curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
