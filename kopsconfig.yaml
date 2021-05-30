@@ -1,0 +1,108 @@
+apiVersion: kops.k8s.io/v1alpha2
+kind: Cluster
+metadata:
+  creationTimestamp: "2021-05-30T14:05:14Z"
+  generation: 8
+  name: workshop.k8s.local
+spec:
+  api:
+    loadBalancer:
+      class: Classic
+      type: Public
+  authorization:
+    rbac: {}
+  certManager:
+    enabled: true
+  channel: stable
+  cloudProvider: aws
+  configBase: s3://workshop-state-store/workshop.k8s.local
+  etcdClusters:
+  - cpuRequest: 201m
+    etcdMembers:
+    - encryptedVolume: true
+      instanceGroup: master-us-west-2a
+      name: a
+    manager:
+      env:
+      - name: ETCD_LISTEN_METRICS_URLS
+        value: http://127.0.0.1:2379
+      - name: ETCD_METRICS
+        value: extensive
+    memoryRequest: 100Mi
+    name: main
+  - cpuRequest: 100m
+    etcdMembers:
+    - encryptedVolume: true
+      instanceGroup: master-us-west-2a
+      name: a
+    memoryRequest: 100Mi
+    name: events
+  iam:
+    allowContainerRegistry: true
+    legacy: false
+  kubelet:
+    anonymousAuth: false
+  kubernetesApiAccess:
+  - 0.0.0.0/0
+  kubernetesVersion: 1.20.6
+  masterInternalName: api.internal.workshop.k8s.local
+  masterPublicName: api.workshop.k8s.local
+  metricsServer:
+    enabled: true
+    insecure: false
+  networkCIDR: 172.20.0.0/16
+  networking:
+    kubenet: {}
+  nonMasqueradeCIDR: 100.64.0.0/10
+  sshAccess:
+  - 0.0.0.0/0
+  subnets:
+  - cidr: 172.20.32.0/19
+    name: us-west-2a
+    type: Public
+    zone: us-west-2a
+  topology:
+    dns:
+      type: Public
+    masters: public
+    nodes: public
+
+---
+
+apiVersion: kops.k8s.io/v1alpha2
+kind: InstanceGroup
+metadata:
+  creationTimestamp: "2021-05-30T14:05:14Z"
+  labels:
+    kops.k8s.io/cluster: workshop.k8s.local
+  name: master-us-west-2a
+spec:
+  image: 099720109477/ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20210415
+  machineType: t3.medium
+  maxSize: 1
+  minSize: 1
+  nodeLabels:
+    kops.k8s.io/instancegroup: master-us-west-2a
+  role: Master
+  subnets:
+  - us-west-2a
+
+---
+
+apiVersion: kops.k8s.io/v1alpha2
+kind: InstanceGroup
+metadata:
+  creationTimestamp: "2021-05-30T14:05:15Z"
+  labels:
+    kops.k8s.io/cluster: workshop.k8s.local
+  name: nodes-us-west-2a
+spec:
+  image: 099720109477/ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-20210415
+  machineType: t3.medium
+  maxSize: 1
+  minSize: 1
+  nodeLabels:
+    kops.k8s.io/instancegroup: nodes-us-west-2a
+  role: Node
+  subnets:
+  - us-west-2a
