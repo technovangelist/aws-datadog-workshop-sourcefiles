@@ -6,9 +6,28 @@
 # Enable this block if you want to use the newest agent
 agents:
   image:
-    repository: datadog/agent
+    name: agent
     tag: latest
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
+  volumes: 
+    - hostPath:
+        path: /etc/kubernetes/pki/etcd
+      name: etcd-keys
+    - emptyDir: {}
+      name: etcd-auto-conf
+  volumeMounts: 
+    - name: etcd-auto-conf
+      mountPath: /etc/datadog-agent/conf.d/etcd.d/
+      readOnly: true
+    - mountPath: /keys
+      name: etcd-keys
+      readOnly: true
+  tolerations: 
+    - key: node-role.kubernetes.io/master
+      effect: NoSchedule
+  nodeSelector: 
+    node-role.kubernetes.io/master: ""
+
 
 # Enable this block to get Kubernetes Beta metrics (https://www.datadoghq.com/blog/explore-kubernetes-resources-with-datadog/)
 clusterAgent:
@@ -19,7 +38,20 @@ clusterAgent:
     pullPolicy: Always
 
 datadog:
-  clusterName: "ecommerce"
+  clusterName: "k8sworkloads"
+  kubelet:
+    tlsVerify: false
+  confd: 
+    etcd.yaml: |-
+      ad_identifiers:
+        - etcd
+      instances:
+        - prometheus_url: https://%%host%%:2379/metrics
+          ssl_verify: false
+          use_preview: true
+          ssl_ca_cert: /keys/ca.crt
+          ssl_cert: /keys/peer.crt
+          ssl_private_key: /keys/peer.key
 
   apm:
     enabled: true
@@ -29,15 +61,27 @@ datadog:
     enabled: true
     containerCollectAll: true
 
+  networkMonitoring:
+    enabled: true
+
+  prometheusScrape:
+    enabled: true
+    serviceEndpoints: true
   # Enable this block for the Kubernetes Beta metrics
   orchestratorExplorer:
     enabled: true
 
   # Enable this block for process collection. It is required for Kubernetes Beta metrics
   processAgent:
+    enabled: true
     processCollection: true
 
   # Enable this block for network and DNS metric collection
   systemProbe:
     enabled: true
     collectDNSStats: true
+  
+clusterChecksRunner:
+  tolerations:
+    - key: node-role.kubernetes.io/master
+      effect: NoSchedule
