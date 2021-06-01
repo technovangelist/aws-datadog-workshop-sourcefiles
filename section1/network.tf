@@ -72,7 +72,7 @@ resource "aws_security_group" "ecommerceapp-sg" {
     from_port   = 3000
     to_port     = 3000
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["${chomp(data.http.myip.body)}/32"]
   }
   ingress {
     from_port   = 0
