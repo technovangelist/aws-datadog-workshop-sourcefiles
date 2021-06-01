@@ -15,6 +15,8 @@ echo "export DD_APP_KEY=$DD_APP_KEY" >> ~/.bashrc
 echo "export TF_VAR_ddapikey=$DD_API_KEY" >> ~/.bashrc
 echo "export TF_VAR_ddappkey=$DD_APP_KEY" >> ~/.bashrc
 echo "alias k=kubectl" >> ~/.bashrc
+echo "alias ks='kubectl -n kube-system'" >> ~/.bashrc
+
 
 
 curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
@@ -72,6 +74,6 @@ kops create -f ~/sourcefiles/kopsconfig.yaml
 kops create secret --name workshop.k8s.local sshpublickey admin -i ~/.ssh/id_rsa.pub
 kops update cluster ${KOPSNAME} --yes --admin
 
-kops export kubecfg --admin
+echo "kops export kubecfg --admin" >> ~/.bashrc
 # aws ec2 run-instances --image-id ami-07e965b5b43bda762 --count 1 --instance-type t3.medium --key-name ecommerceapp --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=workshopcluster}]'
 

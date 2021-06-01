@@ -54,6 +54,8 @@ metadata:
     service: frontend
     app: ecommerce
   name: frontend
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
 spec:
   ports:
     - port: 3000
@@ -63,4 +65,4 @@ spec:
   selector:
     service: frontend
     app: ecommerce
-  type: NodePort
+  type: LoadBalancer

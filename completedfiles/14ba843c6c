@@ -38,6 +38,8 @@ spec:
             value: "user"
           - name: POSTGRES_HOST
             value: "db"
+          - name: POSTGRES_HOST
+            value: "db"
         ports:
         - containerPort: 5002
         resources: {}
