@@ -14,7 +14,6 @@ echo "export DD_API_KEY=$DD_API_KEY" >> ~/.bashrc
 echo "export DD_APP_KEY=$DD_APP_KEY" >> ~/.bashrc
 echo "export TF_VAR_ddapikey=$DD_API_KEY" >> ~/.bashrc
 echo "export TF_VAR_ddappkey=$DD_APP_KEY" >> ~/.bashrc
-echo "export KUBECONFIG=~/.kube/sandbox.conf" >> ~/.bashrc
 echo "alias k=kubectl" >> ~/.bashrc
 
 
@@ -32,7 +31,7 @@ chmod 0600 ~/.ssh/workshop
 cp ~/.ssh/workshop ~/environment/section1/ecommerceapp
 cp ~/.ssh/workshop.pub ~/environment/section1/ecommerceapp.pub
 
-aws ec2 import-key-pair --key-name ecommerceapp --public-key-material fileb://~/.ssh/workshop.pub
+# aws ec2 import-key-pair --key-name ecommerceapp --public-key-material fileb://~/.ssh/workshop.pub
 
 aws iam create-group --group-name kops
 
@@ -62,9 +61,15 @@ aws s3api put-bucket-encryption --bucket workshop-state-store --server-side-encr
 
 export KOPSNAME=workshop.k8s.local
 export KOPS_STATE_STORE=s3://workshop-state-store
+echo "export KOPSNAME=workshop.k8s.local" >> ~/.bashrc 
+echo "export KOPS_STATE_STORE=s3://workshop-state-store" >> ~/.bashrc 
 
+curl -Lo kops https://github.com/kubernetes/kops/releases/download/$(curl -s https://api.github.com/repos/kubernetes/kops/releases/latest | grep tag_name | cut -d '"' -f 4)/kops-linux-amd64
+chmod +x kops
+sudo mv kops /usr/local/bin/kops
 ssh-keygen -f /home/ec2-user/.ssh/id_rsa -q -N ""
-kops create cluster -f ./kopsconfig.yaml
+kops create -f ~/sourcefiles/kopsconfig.yaml
+kops create secret --name workshop.k8s.local sshpublickey admin -i ~/.ssh/id_rsa.pub
 kops update cluster ${KOPSNAME} --yes --admin
 
 kops export kubecfg --admin
