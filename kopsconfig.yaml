@@ -22,12 +22,6 @@ spec:
     - encryptedVolume: true
       instanceGroup: master-us-west-2a
       name: a
-    manager:
-      env:
-      - name: ETCD_LISTEN_METRICS_URLS
-        value: http://127.0.0.1:2379
-      - name: ETCD_METRICS
-        value: extensive
     memoryRequest: 100Mi
     name: main
   - cpuRequest: 100m
@@ -47,9 +41,6 @@ spec:
   kubernetesVersion: 1.20.6
   masterInternalName: api.internal.workshop.k8s.local
   masterPublicName: api.workshop.k8s.local
-  metricsServer:
-    enabled: true
-    insecure: false
   networkCIDR: 172.20.0.0/16
   networking:
     kubenet: {}
@@ -63,7 +54,7 @@ spec:
     zone: us-west-2a
   topology:
     dns:
-      type: Public
+     type: Public
     masters: public
     nodes: public
 

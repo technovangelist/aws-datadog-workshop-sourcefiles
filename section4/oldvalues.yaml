@@ -1,0 +1,87 @@
+# This is a reasonable set of default HELM settings.
+# Enable/disable as you see fit for your deployment.
+# Tested with version 2.4.31, if your release is 2.5.x or newer, check for
+# changes in the original chart values
+
+# Enable this block if you want to use the newest agent
+agents:
+  image:
+    name: agent
+    tag: latest
+    pullPolicy: IfNotPresent
+  volumes: 
+    - hostPath:
+        path: /etc/kubernetes/pki/etcd
+      name: etcd-keys
+    - emptyDir: {}
+      name: etcd-auto-conf
+  volumeMounts: 
+    - name: etcd-auto-conf
+      mountPath: /etc/datadog-agent/conf.d/etcd.d/
+      readOnly: true
+    - mountPath: /keys
+      name: etcd-keys
+      readOnly: true
+  tolerations: 
+    - key: node-role.kubernetes.io/master
+      effect: NoSchedule
+  nodeSelector: 
+    node-role.kubernetes.io/master: ""
+
+
+# Enable this block to get Kubernetes Beta metrics (https://www.datadoghq.com/blog/explore-kubernetes-resources-with-datadog/)
+clusterAgent:
+  enabled: true
+  image:
+    repository: datadog/cluster-agent
+    tag: latest
+    pullPolicy: Always
+
+datadog:
+  clusterName: "k8sworkloads"
+  kubelet:
+    tlsVerify: false
+  confd: 
+    etcd.yaml: |-
+      ad_identifiers:
+        - etcd
+      instances:
+        - prometheus_url: https://%%host%%:2379/metrics
+          ssl_verify: false
+          use_preview: true
+          ssl_ca_cert: /keys/ca.crt
+          ssl_cert: /keys/peer.crt
+          ssl_private_key: /keys/peer.key
+
+  apm:
+    enabled: true
+
+  # Enable this block to get all logs from the pods/containers
+  logs:
+    enabled: true
+    containerCollectAll: true
+
+  networkMonitoring:
+    enabled: true
+
+  prometheusScrape:
+    enabled: true
+    serviceEndpoints: true
+  # Enable this block for the Kubernetes Beta metrics
+  orchestratorExplorer:
+    enabled: true
+
+  # Enable this block for process collection. It is required for Kubernetes Beta metrics
+  processAgent:
+    enabled: true
+    processCollection: true
+
+  # Enable this block for network and DNS metric collection
+  systemProbe:
+    enabled: true
+    collectDNSStats: true
+  
+clusterChecksRunner:
+  tolerations:
+    - key: node-role.kubernetes.io/master
+      effect: NoSchedule

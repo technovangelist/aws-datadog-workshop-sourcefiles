@@ -254,15 +254,24 @@ datadog:
   confd: 
     etcd.yaml: |-
       ad_identifiers:
-        - etcd
+        - etcd-manager
       instances:
-        - prometheus_url: https://%%host%%:2379/metrics
+        - prometheus_url: https://%%host%%:4001/metrics
           ssl_verify: false
           use_preview: true
-          ssl_ca_cert: /keys/ca.crt
-          ssl_cert: /keys/peer.crt
-          ssl_private_key: /keys/peer.key
-
+          # ssl_ca_cert: /keys/etcd-clients-ca.crt
+          ssl_cert: /keys/etcd-clients-ca.crt
+          ssl_private_key: /keys/etcd-clients-ca.key
+    kube_apiserver_metrics.yaml: |-
+      ad_identifiers:
+        - kube-apiserver
+      instances:
+        - prometheus_url: https://%%host%%:443/metrics
+          bearer_token_auth: true
+          # bearer_token_path: "/var/run/secrets/kubernetes.io/serviceaccount/token"
+          ssl_verify: false
+          tags:
+            - "app:api_server"
   #   redisdb.yaml: |-
   #     init_config:
   #     instances:
@@ -418,9 +427,9 @@ datadog:
   ## ref: https://docs.datadoghq.com/agent/kubernetes/prometheus/
   prometheusScrape:
     # datadog.prometheusScrape.enabled -- Enable autodiscovering pods and services exposing prometheus metrics.
-    enabled: false
+    enabled: true
     # datadog.prometheusScrape.serviceEndpoints -- Enable generating dedicated checks for service endpoints.
-    serviceEndpoints: false
+    serviceEndpoints: true
     # datadog.prometheusScrape.additionalConfigs -- Allows adding advanced openmetrics check configurations with custom discovery rules. (Requires Agent version 7.27+)
     additionalConfigs: []
       # -
@@ -935,10 +944,10 @@ agents:
   # agents.volumes -- Specify additional volumes to mount in the dd-agent container
   volumes: 
     - hostPath:
-        path: /etc/kubernetes/pki/etcd
+        path: /etc/kubernetes/pki/etcd-manager-main
       name: etcd-keys
     - emptyDir: {}
-      name: etcd-auto-conf
+      name: apiserver-auto-conf
 
   #   - hostPath:
   #       path: <HOST_PATH>
@@ -946,8 +955,8 @@ agents:
 
   # agents.volumeMounts -- Specify additional volumes to mount in all containers of the agent pod
   volumeMounts: 
-    - name: etcd-auto-conf
-      mountPath: /etc/datadog-agent/conf.d/etcd.d/
+    - name: apiserver-auto-conf
+      mountPath: /etc/datadog-agent/conf.d/kube_apiserver_metrics.d
       readOnly: true
     - mountPath: /keys
       name: etcd-keys
