@@ -58,7 +58,7 @@ metadata:
     service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
 spec:
   ports:
-    - port: 3000
+    - port: 80
       protocol: TCP
       targetPort: 3000
       name: http

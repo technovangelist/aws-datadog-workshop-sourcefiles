@@ -259,7 +259,6 @@ datadog:
         - prometheus_url: https://%%host%%:4001/metrics
           ssl_verify: false
           use_preview: true
-          # ssl_ca_cert: /keys/etcd-clients-ca.crt
           ssl_cert: /keys/etcd-clients-ca.crt
           ssl_private_key: /keys/etcd-clients-ca.key
     kube_apiserver_metrics.yaml: |-
@@ -272,6 +271,11 @@ datadog:
           ssl_verify: false
           tags:
             - "app:api_server"
+    kube_scheduler.yaml: |-
+      ad_identifiers: 
+        - kube-scheduler
+      instances:
+        - log_requests: true
   #   redisdb.yaml: |-
   #     init_config:
   #     instances:

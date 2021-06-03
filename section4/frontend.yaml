@@ -4,7 +4,6 @@ metadata:
   labels:
     service: frontend
     app: ecommerce
-    tags.datadoghq.com/env: "ruby-shop"
   name: frontend
 spec:
   replicas: 1
@@ -22,7 +21,6 @@ spec:
       labels:
         service: frontend
         app: ecommerce
-        tags.datadoghq.com/env: "ruby-shop"
     spec:
       containers:
       - args:
@@ -73,6 +71,8 @@ metadata:
     service: frontend
     app: ecommerce
   name: frontend
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
 spec:
   ports:
     - port: 80
@@ -82,6 +82,4 @@ spec:
   selector:
     service: frontend
     app: ecommerce
-  # Change this value to LoadBalancer for better public ingress routing to this
-  # pod on most k8s platforms.
-  type: NodePort
+  type: LoadBalancer

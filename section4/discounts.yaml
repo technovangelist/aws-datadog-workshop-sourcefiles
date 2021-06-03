@@ -76,4 +76,4 @@ spec:
     service: discounts
     app: ecommerce
   sessionAffinity: None
-  type: ClusterIPs
+  type: ClusterIP

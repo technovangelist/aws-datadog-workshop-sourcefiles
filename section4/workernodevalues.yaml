@@ -1,0 +1,101 @@
+targetSystem: "linux"
+registry: docker.io/datadog
+datadog:
+  apiKey: <DATADOG_API_KEY>
+  appKey:  # <DATADOG_APP_KEY>
+  hostVolumeMountPropagation: None
+  clusterName:  k8sworkloads
+  logLevel: INFO
+  kubeStateMetricsEnabled: false
+  clusterChecks:
+    enabled: false
+  kubelet:
+    host:
+      valueFrom:
+        fieldRef:
+          fieldPath: status.hostIP
+    tlsVerify: false
+  collectEvents: true
+  leaderElection: true
+  leaderLeaseDuration:  # 60
+  logs:
+    enabled: true
+    containerCollectAll: true
+    containerCollectUsingFiles: true
+  apm:
+    enabled: true
+    port: 8126
+    useSocketVolume: false
+    socketPath: /var/run/datadog/apm.socket
+    hostSocketPath: /var/run/datadog/
+  processAgent:
+    enabled: true
+    processCollection: true
+  systemProbe:
+    debugPort: 0
+    enableConntrack: true
+    seccomp: localhost/system-probe
+    seccompRoot: /var/lib/kubelet/seccomp
+    bpfDebug: false
+    apparmor: unconfined
+    enableTCPQueueLength: false
+    enableOOMKill: false
+    collectDNSStats: true
+    maxTrackedConnections: 131072
+    conntrackMaxStateSize: 131072  # 2 * maxTrackedConnections by default, per  https://github.com/DataDog/datadog-agent/blob/d1c5de31e1bba72dfac459aed5ff9562c3fdcc20/pkg/process/config/config.go#L229
+  orchestratorExplorer:
+    enabled: true
+    container_scrubbing:
+      enabled: true
+
+  networkMonitoring:
+    enabled: true
+clusterAgent:
+  enabled: true
+  image:
+    name: cluster-agent
+    tag: 1.12.0
+  containers:
+  command: []
+  token: ""
+  tokenExistingSecret: ""
+  env: 
+    - name: "DD_ORCHESTRATOR_EXPLORER_EXTRA_TAGS"
+      value: "tag1:value1 tag2:value2"
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+
+existingClusterAgent:
+  # existingClusterAgent.join -- set this to true if you want the agents deployed by this chart to
+  # connect to a Cluster Agent deployed independently
+  join: true
+
+  # existingClusterAgent.tokenSecretName -- Existing secret name to use for external Cluster Agent token
+  tokenSecretName: datadogagent-cluster-agent
+
+  # existingClusterAgent.serviceName -- Existing service name to use for reaching the external Cluster Agent
+  serviceName:  datadogagent-cluster-agent
+
+  # existingClusterAgent.clusterchecksEnabled -- set this to false if you don’t want the agents to run the cluster checks of the joined external cluster agent
+  clusterchecksEnabled: false
+
+agents:
+  enabled: true
+  image:
+    name: agent
+    tag: 7.28.1
+  containers:
+    agent:
+      env: []
+      logLevel:  # INFO
+    processAgent:
+      # agents.containers.processAgent.env -- Additional environment variables for the process-agent container
+      env: 
+        - name: "DD_ORCHESTRATOR_EXPLORER_EXTRA_TAGS"
+          value: "orchestrator:on"
+
+clusterChecksRunner:
+  enabled: false
