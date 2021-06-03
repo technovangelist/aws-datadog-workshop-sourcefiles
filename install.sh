@@ -16,6 +16,8 @@ echo "export TF_VAR_ddapikey=$DD_API_KEY" >> ~/.bashrc
 echo "export TF_VAR_ddappkey=$DD_APP_KEY" >> ~/.bashrc
 echo "alias k=kubectl" >> ~/.bashrc
 echo "alias ks='kubectl -n kube-system'" >> ~/.bashrc
+echo "complete -F __start_kubectl k" >> ~/.bashrc
+echo "complete -F __start_kubectl ks" >> ~/.bashrc
 
 
 
@@ -76,4 +78,7 @@ kops update cluster ${KOPSNAME} --yes --admin
 
 echo "kops export kubecfg --admin" >> ~/.bashrc
 # aws ec2 run-instances --image-id ami-07e965b5b43bda762 --count 1 --instance-type t3.medium --key-name ecommerceapp --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=workshopcluster}]'
+
+source <(kubectl completion bash) # setup autocomplete in bash into the current shell, bash-completion package should be installed first.
+echo "source <(kubectl completion bash)" >> ~/.bashrc # add autocomplete permanently to your bash shell.
 
