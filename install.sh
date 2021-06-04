@@ -2,6 +2,7 @@
 git clone https://github.com/technovangelist/aws-datadog-workshop-sourcefiles.git ~/sourcefiles 
 
 cp -r ~/sourcefiles/section* ~/environment/
+cp ~/sourcefiles/kopsconfig.yaml ~/environment/
 chmod +x ~/environment/section2/setup.sh
 npm i -g c9
 sudo yum install terraform -y
