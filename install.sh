@@ -78,7 +78,8 @@ ssh-keygen -f /home/ec2-user/.ssh/id_rsa -q -N ""
 echo "$KOPSNAME"
 sed -i "s|workshop.k8s.local|$KOPSNAME|g" /home/ec2-user/environment/kopsconfig.yaml
 sed -i "s|s3://workshop-state-store|$KOPS_STATE_STORE|g" /home/ec2-user/environment/kopsconfig.yaml
-kops create -f ~/environment/kopsconfig.yaml
+sed -i "s|s3://c/|s3://|g"  /home/ec2-user/environment/kopsconfig.yaml
+kops create -f /home/ec2-user/environment/kopsconfig.yaml
 kops create secret --name "$KOPSNAME" --state "$KOPS_STATE_STORE" sshpublickey admin -i ~/.ssh/id_rsa.pub
 kops update cluster "$KOPSNAME" --yes --admin
 
