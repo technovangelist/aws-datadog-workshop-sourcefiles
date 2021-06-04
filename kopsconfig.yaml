@@ -15,7 +15,7 @@ spec:
     enabled: true
   channel: stable
   cloudProvider: aws
-  configBase: s3://workshop-state-store/workshop.k8s.local
+  configBase: s3://c/workshop.k8s.local
   etcdClusters:
   - cpuRequest: 201m
     etcdMembers:

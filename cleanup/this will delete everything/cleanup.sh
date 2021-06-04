@@ -1,9 +1,9 @@
-kops delete cluster --name=workshop.k8s.local --state=s3://workshop-state-store --yes
+kops delete cluster --name="$KOPSNAME" --state="$KOPS_STATE_STORE" --yes
 
 rm ~/.ssh/id_rsa
 rm ~/.ssh/id_rsa.pub
 
-BUCKET_TO_PURGE=workshop-state-store
+BUCKET_TO_PURGE=${KOPS_STATE_STORE: 5}
 echo '#!/bin/bash' > deleteBucketScript.sh \
 && aws --output text s3api list-object-versions --bucket $BUCKET_TO_PURGE \
 | grep -E "^VERSIONS" |\
@@ -14,7 +14,7 @@ deleteBucketScript.sh && aws --output text s3api list-object-versions --bucket $
 | awk '{print "aws s3api delete-object --bucket $BUCKET_TO_PURGE --key "$3" --version-id "$5";"}' >> \
 deleteBucketScript.sh && . deleteBucketScript.sh; rm -f deleteBucketScript.sh;
 
-aws s3 rb s3://workshop-state-store --force
+aws s3 rb "$KOPS_STATE_STORE" --force
 
 aws iam delete-access-key --access-key-id $(jq -r .AccessKey.AccessKeyId ~/environment/kopskeys) --user-name kops
 aws iam remove-user-from-group --user-name kops --group-name kops
@@ -40,4 +40,6 @@ rm -rf ~/environment/section4
 
 rm -rf ~/sourcefiles
 
+rm ~/environment/kopsconfig.yaml
+rm ~/environment/kopskeys
 

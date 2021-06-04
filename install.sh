@@ -59,22 +59,27 @@ printf '[kops]\naws_access_key_id = %s\naws_secret_access_key = %s' "$(jq -r .Ac
 export AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id)
 export AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key)
 
-aws s3api create-bucket --bucket workshop-state-store --region us-east-1
-aws s3api put-bucket-versioning --bucket workshop-state-store  --versioning-configuration Status=Enabled
-aws s3api put-bucket-encryption --bucket workshop-state-store --server-side-encryption-configuration '{"Rules":[{"ApplyServerSideEncryptionByDefault":{"SSEAlgorithm":"AES256"}}]}'
+export kssname="workshop-state-store-${DD_API_KEY: -4}"
 
-export KOPSNAME=workshop.k8s.local
-export KOPS_STATE_STORE=s3://workshop-state-store
-echo "export KOPSNAME=workshop.k8s.local" >> ~/.bashrc 
-echo "export KOPS_STATE_STORE=s3://workshop-state-store" >> ~/.bashrc 
+aws s3api create-bucket --bucket "$kssname" --region us-east-1
+aws s3api put-bucket-versioning --bucket "$kssname"  --versioning-configuration Status=Enabled
+aws s3api put-bucket-encryption --bucket "$kssname" --server-side-encryption-configuration '{"Rules":[{"ApplyServerSideEncryptionByDefault":{"SSEAlgorithm":"AES256"}}]}'
+
+export KOPSNAME="workshop-${DD_API_KEY: -4}.k8s.local"
+export KOPS_STATE_STORE=s3://$kssname
+echo "export KOPSNAME=$KOPSNAME" >> ~/.bashrc 
+echo "export KOPS_STATE_STORE=$KOPS_STATE_STORE" >> ~/.bashrc 
 
 curl -Lo kops https://github.com/kubernetes/kops/releases/download/$(curl -s https://api.github.com/repos/kubernetes/kops/releases/latest | grep tag_name | cut -d '"' -f 4)/kops-linux-amd64
 chmod +x kops
 sudo mv kops /usr/local/bin/kops
 ssh-keygen -f /home/ec2-user/.ssh/id_rsa -q -N ""
-kops create -f ~/sourcefiles/kopsconfig.yaml
-kops create secret --name workshop.k8s.local sshpublickey admin -i ~/.ssh/id_rsa.pub
-kops update cluster ${KOPSNAME} --yes --admin
+echo "$KOPSNAME"
+sed -i "s|workshop.k8s.local|$KOPSNAME|g" /home/ec2-user/environment/kopsconfig.yaml
+sed -i "s|s3://workshop-state-store|$KOPS_STATE_STORE|g" /home/ec2-user/environment/kopsconfig.yaml
+kops create -f ~/environment/kopsconfig.yaml
+kops create secret --name "$KOPSNAME" --state "$KOPS_STATE_STORE" sshpublickey admin -i ~/.ssh/id_rsa.pub
+kops update cluster "$KOPSNAME" --yes --admin
 
 echo "kops export kubecfg --admin" >> ~/.bashrc
 # aws ec2 run-instances --image-id ami-07e965b5b43bda762 --count 1 --instance-type t3.medium --key-name ecommerceapp --tag-specifications 'ResourceType=instance,Tags=[{Key=Name,Value=workshopcluster}]'
