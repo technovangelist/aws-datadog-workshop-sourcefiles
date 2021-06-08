@@ -1,3 +1,6 @@
+#!/bin/bash
+if [ -z ${KOPS_STATE_STORE+x} ]; then echo 'KOPS_STATE_STORE not set';exit; fi
+if [ -z ${KOPSNAME+x} ]; then echo 'KOPSNAME not set';exit; fi
 cwd=$(pwd)
 cd ~/environment/section1
 terraform destroy -auto-approve
@@ -48,4 +51,6 @@ rm -rf ~/sourcefiles
 
 rm ~/environment/kopsconfig.yaml
 rm ~/environment/kopskeys
+rm ~/.aws/config
+
 

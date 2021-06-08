@@ -50,8 +50,8 @@ aws iam create-user --user-name kops
 aws iam add-user-to-group --user-name kops --group-name kops
 aws iam create-access-key --user-name kops > kopskeys
 
-printf '[profile kops]\nregion = us-west-2\noutput = json' >> ~/.aws/config
-printf '[kops]\naws_access_key_id = %s\naws_secret_access_key = %s' "$(jq -r .AccessKey.AccessKeyId kopskeys)" "$(jq -r .AccessKey.SecretAccessKey kopskeys)"
+printf '[profile kops]\nregion = us-west-2\noutput = json\n' >> ~/.aws/config
+printf '[kops]\naws_access_key_id = %s\naws_secret_access_key = %s' "$(jq -r .AccessKey.AccessKeyId kopskeys)" "$(jq -r .AccessKey.SecretAccessKey kopskeys)\n" >> ~/.aws/credentials
 # aws configure set aws_access_key_id $(jq -r .AccessKey.AccessKeyId kopskeys)
 # aws configure set aws_secret_access_key $(jq -r .AccessKey.SecretAccessKey kopskeys)
 # aws configure set default.region us-west-2
