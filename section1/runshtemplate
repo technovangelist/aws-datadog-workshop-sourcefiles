@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function checkssh () { 
-    while ! ssh -oStrictHostKeyChecking=no $1@$2 echo ''
+    while ! ssh -i /home/ec2-user/environment/section1/ecommerceapp -oStrictHostKeyChecking=no $1@$2 echo ''
         do sleep 3
     done
 }
