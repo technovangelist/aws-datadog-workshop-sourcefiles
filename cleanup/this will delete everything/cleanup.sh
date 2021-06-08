@@ -1,3 +1,8 @@
+cwd=$(pwd)
+cd ~/environment/section1
+terraform destroy -auto-approve
+cd $cwd
+
 kops delete cluster --name="$KOPSNAME" --state="$KOPS_STATE_STORE" --yes
 
 rm ~/.ssh/id_rsa

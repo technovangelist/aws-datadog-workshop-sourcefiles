@@ -8,6 +8,6 @@ sshstring="$loginname@$publicip"
 
 echo $privateip $hostname >> $hosts
 echo checkssh $loginname $publicip >> run.sh
-echo scp -oStrictHostKeyChecking=no -i ecommerceapp $hosts $sshstring:/home/$loginname/hosts >> run.sh
-echo ssh -oStrictHostKeyChecking=no -i ecommerceapp $sshstring sudo mv /home/$loginname/hosts /etc/hosts >> run.sh 
-echo ssh -oStrictHostKeyChecking=no -i ecommerceapp $sshstring sudo hostname $hostname >> run.sh
+echo scp -oStrictHostKeyChecking=no -i ~/environment/section1/ecommerceapp $hosts $sshstring:/home/$loginname/hosts >> run.sh
+echo ssh -i ~/environment/section1/ecommerceapp -oStrictHostKeyChecking=no -i ecommerceapp $sshstring sudo mv /home/$loginname/hosts /etc/hosts >> run.sh 
+echo ssh -i ~/environment/section1/ecommerceapp -oStrictHostKeyChecking=no -i ecommerceapp $sshstring sudo hostname $hostname >> run.sh

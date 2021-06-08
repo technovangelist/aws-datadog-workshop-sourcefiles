@@ -85,7 +85,7 @@ resource "aws_instance" "db" {
   user_data = templatefile("install_db_host.sh.tpl", { apikey = var.ddapikey })
   key_name  = aws_key_pair.ecommerceapp-key.key_name
   tags = {
-    Name  = "ecm-discounts"
+    Name  = "ecm-db"
     Owner = var.owner
   }
 

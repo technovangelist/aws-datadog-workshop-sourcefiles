@@ -49,9 +49,11 @@ variable "ddappkey" {
 }
 
 variable "clienttoken" {
-  type = string
+  type    = string
+  default = ""
 }
 
 variable "rumappid" {
-  type = string
+  type    = string
+  default = ""
 }
