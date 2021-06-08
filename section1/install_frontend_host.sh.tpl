@@ -31,6 +31,11 @@ sudo ln -s /ecommerce-workshop/store-frontend-instrumented-fixed /app
 
 wall -n 'datadog agent'
 DD_AGENT_MAJOR_VERSION=7 DD_API_KEY=${apikey} DD_SITE="datadoghq.com" bash -c "$(curl -L https://s3.amazonaws.com/dd-agent/scripts/install_script.sh)"
+sudo -u dd-agent sed -i "s/# logs_enabled: false/logs_enabled: true/g" /etc/datadog-agent/datadog.yaml
+sudo -u dd-agent sed -i "s/# process_config:/process_config:\n  enabled: 'true'/g" /etc/datadog-agent/datadog.yaml
+sudo -u dd-agent cp /etc/datadog-agent/system-probe.yaml.example /etc/datadog-agent/system-probe.yaml
+sudo -u dd-agent sed -i "s/# network_config:/network_config:\n  enabled: true/g" /etc/datadog-agent/system-probe.yaml
+sudo systemctl restart datadog-agent.service
 
 sudo sed -i "s/# logs_enabled: false/logs_enabled: true/g" /etc/datadog-agent/datadog.yaml
 

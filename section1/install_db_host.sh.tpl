@@ -21,4 +21,9 @@ sudo systemctl restart postgresql.service
 
 DD_AGENT_MAJOR_VERSION=7 DD_API_KEY=${apikey} DD_SITE="datadoghq.com" bash -c "$(curl -L https://s3.amazonaws.com/dd-agent/scripts/install_script.sh)"
 sudo sed -i "s/# logs_enabled: false/logs_enabled: true/g" /etc/datadog-agent/datadog.yaml
-
+sudo sed -i "s/# process_config:/process_config:\n  enabled: 'true'/g" /etc/datadog-agent/datadog.yaml
+sudo cp /etc/datadog-agent/conf.d/postgres.d/conf.yaml.example /etc/datadog-agent/conf.d/postgres.d/conf.yaml
+sudo sed -i "s/# password: <PASSWORD>/password: password/g" /etc/datadog-agent/conf.d/postgres.d/conf.yaml
+sudo -u dd-agent cp /etc/datadog-agent/system-probe.yaml.example /etc/datadog-agent/system-probe.yaml
+sudo -u dd-agent sed -i "s/# network_config:/network_config:\n  enabled: true/g" /etc/datadog-agent/system-probe.yaml
+sudo systemctl restart datadog-agent.service
