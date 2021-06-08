@@ -329,7 +329,6 @@ datadog:
 
   ## Enable systemProbe agent and provide custom configs
   systemProbe:
-
     # datadog.systemProbe.debugPort -- Specify the port to expose pprof and expvar for system-probe agent
     debugPort: 0
 
