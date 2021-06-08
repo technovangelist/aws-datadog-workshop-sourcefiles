@@ -1,9 +1,3 @@
-data "http" "myip" {
-  url = "http://ipv4.icanhazip.com"
-  request_headers = {
-    Accept = "application/text"
-  }
-}
 
 resource "aws_vpc" "ecommerceapp-vpc" {
   cidr_block           = "10.0.0.0/16"
@@ -66,7 +60,7 @@ resource "aws_security_group" "ecommerceapp-sg" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["${chomp(data.http.myip.body)}/32"]
+    cidr_blocks = ["0.0.0.0/0"]
   }
   ingress {
     from_port   = 3000
