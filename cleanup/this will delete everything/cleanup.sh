@@ -41,7 +41,7 @@ rm ~/.ssh/workshop.pub
 sed -i '/export DD_API_KEY/d' ~/.bashrc
 sed -i '/export DD_APP_KEY/d' ~/.bashrc
 
-cd ~/
+
 rm -rf ~/environment/section1
 rm -rf ~/environment/section2
 rm -rf ~/environment/section3
@@ -52,5 +52,6 @@ rm -rf ~/sourcefiles
 rm ~/environment/kopsconfig.yaml
 rm ~/environment/kopskeys
 rm ~/.aws/config
+rm ~/.aws/credentials
 
 
