@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [ -z ${DD_APP_KEY+x} ]; then echo 'DD_APP_KEY not set';exit; fi
-if [ -z ${DD_API_KEY+x} ]; then echo 'DD_API_KEY not set';exit; fi
+if [ -z ${DD_APP_KEY+x} ]; then echo 'DD_APP_KEY not set. Breaking out of setup';exit; fi
+if [ -z ${DD_API_KEY+x} ]; then echo 'DD_API_KEY not set. Breaking of of setup';exit; fi
 
 git clone https://github.com/technovangelist/aws-datadog-workshop-sourcefiles.git ~/sourcefiles 
 
