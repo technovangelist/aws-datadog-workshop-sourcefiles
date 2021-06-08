@@ -4,7 +4,7 @@ if [ -z ${KOPSNAME+x} ]; then echo 'KOPSNAME not set';exit; fi
 cwd=$(pwd)
 cd ~/environment/section1
 terraform destroy -auto-approve
-cd $cwd
+cd "$cwd" || return
 
 kops delete cluster --name="$KOPSNAME" --state="$KOPS_STATE_STORE" --yes
 
