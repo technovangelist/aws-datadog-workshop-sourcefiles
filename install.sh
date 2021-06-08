@@ -60,13 +60,13 @@ printf '[kops]\naws_access_key_id = %s\naws_secret_access_key = %s' "$(jq -r .Ac
 export AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id)
 export AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key)
 
-export kssname="workshop-state-store-${DD_API_KEY: -8}"
+export kssname="workshop-state-store-${DD_API_KEY: -6}"
 
 aws s3api create-bucket --bucket "$kssname" --region us-east-1
 aws s3api put-bucket-versioning --bucket "$kssname"  --versioning-configuration Status=Enabled
 aws s3api put-bucket-encryption --bucket "$kssname" --server-side-encryption-configuration '{"Rules":[{"ApplyServerSideEncryptionByDefault":{"SSEAlgorithm":"AES256"}}]}'
 
-export KOPSNAME="workshop-${DD_API_KEY: -8}.k8s.local"
+export KOPSNAME="workshop-${DD_API_KEY: -6}.k8s.local"
 export KOPS_STATE_STORE=s3://$kssname
 echo "export KOPSNAME=$KOPSNAME" >> ~/.bashrc 
 echo "export KOPS_STATE_STORE=$KOPS_STATE_STORE" >> ~/.bashrc 

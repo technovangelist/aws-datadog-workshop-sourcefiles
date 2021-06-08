@@ -34,6 +34,7 @@ aws iam delete-group --group-name kops
 aws ec2 delete-key-pair --key-name ecommerceapp
 
 rm ~/.ssh/workshop
+rm ~/.ssh/workshop.pub
 sed -i '/export DD_API_KEY/d' ~/.bashrc
 sed -i '/export DD_APP_KEY/d' ~/.bashrc
 
