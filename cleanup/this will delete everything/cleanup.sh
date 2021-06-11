@@ -40,6 +40,15 @@ rm ~/.ssh/workshop
 rm ~/.ssh/workshop.pub
 sed -i '/export DD_API_KEY/d' ~/.bashrc
 sed -i '/export DD_APP_KEY/d' ~/.bashrc
+sed -i '/export TF_VAR_ddapikey/d' ~/.bashrc
+sed -i '/export TF_VAR_ddappkey/d' ~/.bashrc
+sed -i '/alias k/d' ~/.bashrc
+sed -i '/__start_kubectl/d' ~/.bashrc
+sed -i '/export KOPSNAME/d' ~/.bashrc
+sed -i '/export KOPS_STATE_STORE/d' ~/.bashrc
+sed -i '/kops export/d' ~/.bashrc
+sed -i '/kubectl completion/d' ~/.bashrc
+
 
 
 rm -rf ~/environment/section1
