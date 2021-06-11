@@ -1,7 +1,7 @@
 variable "instance_type" {
   description = "Instance type to use for each host."
   type        = string
-  default     = "t2.medium"
+  default     = "t2.small"
 }
 variable "region" {
   type    = string
